@@ -9,5 +9,8 @@ module.exports = {
     },
     createData(newStudent){
         return db('data').insert(newStudent).returning('*')
+    },
+    readAllUsers(){
+        return db('users')
     }
 }

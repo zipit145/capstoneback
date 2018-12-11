@@ -12,4 +12,5 @@ router.post('/', (req,res) => {
     queries.createData(req.body).then(newData => res.status(201).send({ newData }))
 })
 
+
 module.exports = router
