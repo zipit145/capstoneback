@@ -12,5 +12,15 @@ module.exports = {
     },
     readAllUsers(){
         return db('users')
+    },
+    deleteMovie(id){
+        return db('data')
+          .where('id', id)
+          .delete()
+    },
+    updateMovie(id, movie){
+        return db('data')
+            .where('id', id)
+            .update(movie)
     }
 }
