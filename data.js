@@ -16,16 +16,16 @@ const config = {
 // .then(function(result){
 //     console.log(result)
 // })
-Tesseract.recognize('ocr-two-column-example-1.jpg')
+Tesseract.recognize('hello.png')
     .then(
             function(result){
                 for(i=0;i<result.words.length;i++) {
-                    if(result.words[i].text === "majuscule"){
+                    if(result.words[i].text === "Hello"){
                         console.log('result is: ',result.words[i].text)
                         console.log('baseline is: ',result.words[i].baseline)
                     }
                 }
-
+                //console.log(result)
             }
         )
 // .progress(function  (p) { console.log('progress', p)    })
