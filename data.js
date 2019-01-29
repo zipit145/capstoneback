@@ -18,12 +18,19 @@ const config = {
 // .then(function(result){
 //     console.log(result)
 // })
-
+var holder =  []
 var resultHolder = []
 // var picture = 'hello-small-bw.jpg'
 // var term = "Hello"
+var circle2s = []
 var picture = 'ocr-two-column-example-1.jpg'
-var term = "Originally"
+//  var term = "Originally"
+ var write =  "hello-small-bw0.jpg"
+ var term = "majuscule"
+
+
+
+
 
 
 Tesseract.recognize(picture)
@@ -42,19 +49,20 @@ Tesseract.recognize(picture)
         )
     .then(function(){
         for(let i=0;i<resultHolder.length;i++) {
+            let x = resultHolder[i].x1 - resultHolder[i].x0
             Jimp.read('circle-600.png')
             .then(circle => {
-                var x = resultHolder[i].x1 - resultHolder[i].x0
-                console.log(i, "here")
+            console.log(i, "here")
               return circle
                 .resize(x, 5) // resize
-                .write('circle-601.png'); // save
+                .write('circle-60'+i+'.png'); // save
             })
             .then(helloSm => {
-                var circle2 =  new Jimp('circle-601.png', function (err, img) {
+                let circle2 =  new Jimp('circle-60'+i+'.png', function (err, img) {
                     err ? console.log('logo err' + err) : console.log('logo created and ready for use');
                     return img.opacity(0.3);
-                });
+                })
+                
                 Jimp.read(picture)
                 .then(hello => {
                   //hello.pixelate( 171, 208, 400, 1 )
