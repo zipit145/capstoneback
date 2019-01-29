@@ -2,6 +2,7 @@ var express = require('express')
 var router =  express.Router()
 const queries = require('./queries')
 const Tesseract = require('tesseract.js')
+var Jimp = require('jimp');
 //const tesseract = require('node-tesseract-ocr')
 //const img = require('ocr-two-column-example-1.jpg')
  
@@ -11,23 +12,59 @@ const config = {
   psm: 3,
   tessedit_create_txt:1
 }
+var circle2 =  new Jimp('circle-601.png', function (err, img) {
+    err ? console.log('logo err' + err) : console.log('logo created and ready for use');
+    return img.opacity(0.3);
+});
  
 // Tesseract.recognize('ocr-two-column-example-1.jpg')
 // .then(function(result){
 //     console.log(result)
 // })
-Tesseract.recognize('hello.png')
+
+var resultHolder = []
+
+
+Tesseract.recognize('hello-small-bw.jpg')
     .then(
             function(result){
                 for(i=0;i<result.words.length;i++) {
                     if(result.words[i].text === "Hello"){
-                        console.log('result is: ',result.words[i].text)
-                        console.log('baseline is: ',result.words[i].baseline)
+                        resultHolder.push(result.words[i].baseline)
+                        resultHolder.push(result.words[i].text)
+                        console.log(resultHolder)
+                        return resultHolder
                     }
                 }
-                //console.log(result)
+                //
             }
+            
         )
+    .then(function(){
+        Jimp.read('circle-600.png')
+        .then(circle => {
+          return circle
+            .resize(400, 5) // resize
+            .write('circle-601.png'); // save
+        })
+        .then(helloSm => {
+            Jimp.read('hello-small-bw.jpg')
+            .then(hello => {
+              //hello.pixelate( 171, 208, 400, 1 )
+              return hello
+                .mask(circle2, 171, 208)
+                .write('hello-small-bw2.jpg')
+            })
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    })
+
+
+
+    
+
 // .progress(function  (p) { console.log('progress', p)    })
 // .then(function (result) { console.log('result', result) })
 
