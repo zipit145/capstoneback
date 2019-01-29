@@ -12,10 +12,7 @@ const config = {
   psm: 3,
   tessedit_create_txt:1
 }
-var circle2 =  new Jimp('circle-601.png', function (err, img) {
-    err ? console.log('logo err' + err) : console.log('logo created and ready for use');
-    return img.opacity(0.3);
-});
+
  
 // Tesseract.recognize('ocr-two-column-example-1.jpg')
 // .then(function(result){
@@ -23,42 +20,54 @@ var circle2 =  new Jimp('circle-601.png', function (err, img) {
 // })
 
 var resultHolder = []
+// var picture = 'hello-small-bw.jpg'
+// var term = "Hello"
+var picture = 'ocr-two-column-example-1.jpg'
+var term = "Originally"
 
 
-Tesseract.recognize('hello-small-bw.jpg')
+Tesseract.recognize(picture)
     .then(
             function(result){
                 for(i=0;i<result.words.length;i++) {
-                    if(result.words[i].text === "Hello"){
+                    if(result.words[i].text === term){
                         resultHolder.push(result.words[i].baseline)
-                        resultHolder.push(result.words[i].text)
                         console.log(resultHolder)
-                        return resultHolder
+                        
                     }
                 }
-                //
+                return resultHolder
             }
             
         )
     .then(function(){
-        Jimp.read('circle-600.png')
-        .then(circle => {
-          return circle
-            .resize(400, 5) // resize
-            .write('circle-601.png'); // save
-        })
-        .then(helloSm => {
-            Jimp.read('hello-small-bw.jpg')
-            .then(hello => {
-              //hello.pixelate( 171, 208, 400, 1 )
-              return hello
-                .mask(circle2, 171, 208)
-                .write('hello-small-bw2.jpg')
+        for(let i=0;i<resultHolder.length;i++) {
+            Jimp.read('circle-600.png')
+            .then(circle => {
+                var x = resultHolder[i].x1 - resultHolder[i].x0
+                console.log(i, "here")
+              return circle
+                .resize(x, 5) // resize
+                .write('circle-601.png'); // save
             })
-        })
-        .catch(err => {
-          console.error(err);
-        });
+            .then(helloSm => {
+                var circle2 =  new Jimp('circle-601.png', function (err, img) {
+                    err ? console.log('logo err' + err) : console.log('logo created and ready for use');
+                    return img.opacity(0.3);
+                });
+                Jimp.read(picture)
+                .then(hello => {
+                  //hello.pixelate( 171, 208, 400, 1 )
+                  return hello
+                    .mask(circle2, resultHolder[i].x0, resultHolder[i].y0)
+                    .write('hello-small-bw'+i+'.jpg')
+                })
+            })
+            .catch(err => {
+              console.error(err);
+            });
+        }
+
     })
 
 
